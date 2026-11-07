@@ -1,0 +1,19 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+
+# Configuración local
+.idea/
+.env
+
+# Archivos temporales de pruebas
+.pytest_cache/
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
