@@ -16,6 +16,9 @@ from agenda_contactos.interfaz.estilos import (
     ESTILO_GENERAL
 )
 
+from agenda_contactos.interfaz.ventana_contactos import VentanaContactos
+from agenda_contactos.interfaz.ventana_exportar import VentanaExportar
+
 
 class VentanaPrincipal(QMainWindow):
 
@@ -74,6 +77,7 @@ class VentanaPrincipal(QMainWindow):
             boton.setObjectName("menu_boton")
             boton.setProperty("activo", False)
             boton.setCursor(Qt.CursorShape.PointingHandCursor)
+
             boton.clicked.connect(
                 lambda checked=False, i=indice: self.cambiar_seccion(i)
             )
@@ -108,19 +112,19 @@ class VentanaPrincipal(QMainWindow):
         self.paginas = QStackedWidget()
 
         self.paginas.addWidget(self.crear_inicio())
-        self.paginas.addWidget(self.crear_pagina(
-            "Gestión de contactos",
-            "Aquí podremos agregar, buscar y modificar contactos."
-        ))
-        self.paginas.addWidget(self.crear_pagina(
-            "Exportación de información",
-            "Aquí generaremos los archivos JSON y los reportes PDF."
-        ))
+
+        self.ventana_contactos = VentanaContactos()
+        self.paginas.addWidget(self.ventana_contactos)
+
+        self.ventana_exportar = VentanaExportar()
+        self.paginas.addWidget(self.ventana_exportar)
+
         self.paginas.addWidget(self.crear_pagina(
             "Herramientas del sistema",
             "Aquí verificaremos la integridad, crearemos respaldos "
             "y consultaremos la información de los archivos."
         ))
+
         self.paginas.addWidget(self.crear_pagina(
             "Centro de ayuda",
             "Información general sobre el funcionamiento del sistema."
@@ -251,6 +255,9 @@ class VentanaPrincipal(QMainWindow):
         self.encabezado.setText(titulo)
         self.descripcion.setText(descripcion)
         self.paginas.setCurrentIndex(indice)
+
+        if indice == 1:
+            self.ventana_contactos.cargar_contactos()
 
         for posicion, boton in enumerate(self.botones_menu):
             boton.setProperty("activo", posicion == indice)

@@ -87,3 +87,19 @@ class ServicioContactos:
         )
 
         return numero_registro, posicion, posicion_final
+
+    def listar_contactos(self):
+        indice = cargar_indice()
+        contactos = []
+
+        for identificador, numero_registro in indice.items():
+            contacto, posicion = leer_registro(numero_registro)
+
+            if contacto.id != int(identificador):
+                raise ValueError(
+                    "El índice no coincide con el registro almacenado."
+                )
+
+            contactos.append(contacto)
+
+        return sorted(contactos, key=lambda contacto: contacto.id)
