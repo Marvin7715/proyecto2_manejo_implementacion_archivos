@@ -20,6 +20,7 @@ from agenda_contactos.interfaz.estilos import (
 from agenda_contactos.interfaz.ventana_contactos import VentanaContactos
 from agenda_contactos.interfaz.ventana_exportar import VentanaExportar
 from agenda_contactos.almacenamiento.integridad import verificar_integridad
+from agenda_contactos.interfaz.ventana_herramientas import VentanaHerramientas
 
 class VentanaPrincipal(QMainWindow):
 
@@ -121,11 +122,8 @@ class VentanaPrincipal(QMainWindow):
         self.ventana_exportar = VentanaExportar()
         self.paginas.addWidget(self.ventana_exportar)
 
-        self.paginas.addWidget(self.crear_pagina(
-            "Herramientas del sistema",
-            "Aquí verificaremos la integridad, crearemos respaldos "
-            "y consultaremos la información de los archivos."
-        ))
+        self.ventana_herramientas = VentanaHerramientas()
+        self.paginas.addWidget(self.ventana_herramientas)
 
         self.paginas.addWidget(self.crear_pagina(
             "Centro de ayuda",
