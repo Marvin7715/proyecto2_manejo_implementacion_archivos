@@ -1,4 +1,5 @@
 from agenda_contactos.contactos.modelo import Contacto
+from agenda_contactos.almacenamiento.integridad import guardar_hash
 from agenda_contactos.almacenamiento.registros import (
     LONGITUDES,
     agregar_registro,
@@ -50,7 +51,7 @@ class ServicioContactos:
         numero, posicion, posicion_final = agregar_registro(contacto)
 
         agregar_al_indice(contacto.id, numero)
-
+        guardar_hash()
         return numero, posicion, posicion_final
 
     def buscar(self, identificador):
@@ -82,10 +83,9 @@ class ServicioContactos:
             raise ValueError("No existe el contacto que desea modificar.")
 
         posicion, posicion_final = modificar_registro(
-            numero_registro,
-            nuevos_datos
+            numero_registro, nuevos_datos
         )
-
+        guardar_hash()
         return numero_registro, posicion, posicion_final
 
     def listar_contactos(self):

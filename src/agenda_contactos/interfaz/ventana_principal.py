@@ -7,7 +7,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QStackedWidget,
-    QGridLayout
+    QGridLayout,
+    QMessageBox
 )
 from PySide6.QtCore import Qt
 
@@ -18,7 +19,7 @@ from agenda_contactos.interfaz.estilos import (
 
 from agenda_contactos.interfaz.ventana_contactos import VentanaContactos
 from agenda_contactos.interfaz.ventana_exportar import VentanaExportar
-
+from agenda_contactos.almacenamiento.integridad import verificar_integridad
 
 class VentanaPrincipal(QMainWindow):
 
@@ -43,6 +44,7 @@ class VentanaPrincipal(QMainWindow):
         self.setStyleSheet(ESTILO_GENERAL)
 
         self.cambiar_seccion(0)
+        self.verificar_archivo_integridad()
 
     def crear_sidebar(self, layout_principal):
 
@@ -263,3 +265,21 @@ class VentanaPrincipal(QMainWindow):
             boton.setProperty("activo", posicion == indice)
             boton.style().unpolish(boton)
             boton.style().polish(boton)
+
+    def verificar_archivo_integridad(self):
+        try:
+            estado, mensaje = verificar_integridad()
+
+            if estado == "alterado":
+                QMessageBox.warning(
+                    self,
+                    "Advertencia de integridad",
+                    mensaje
+                )
+
+        except (OSError, ValueError) as error:
+            QMessageBox.warning(
+                self,
+                "Error de integridad",
+                str(error)
+            )
