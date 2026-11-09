@@ -9,8 +9,22 @@
     {
         "id": 1002,
         "nombre": "Fernando Perez",
-        "telefono": "55151669",
+        "telefono": "55151625",
         "correo": "yordy09@gmail.com",
         "ciudad": "Huehuetenango"
+    },
+    {
+        "id": 1003,
+        "nombre": "Melqui García",
+        "telefono": "45625131",
+        "correo": "melqui67@gmail.com",
+        "ciudad": "Retahuleu"
+    },
+    {
+        "id": 1004,
+        "nombre": "Daniel Hardman",
+        "telefono": "54120454",
+        "correo": "hardmand@gmail.com",
+        "ciudad": "Guatemala"
     }
 ]
