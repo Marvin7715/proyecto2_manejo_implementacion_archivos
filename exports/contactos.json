@@ -16,7 +16,7 @@
     {
         "id": 1003,
         "nombre": "Melqui García",
-        "telefono": "45625131",
+        "telefono": "45625133",
         "correo": "melqui67@gmail.com",
         "ciudad": "Retahuleu"
     },
@@ -26,5 +26,12 @@
         "telefono": "54120454",
         "correo": "hardmand@gmail.com",
         "ciudad": "Guatemala"
+    },
+    {
+        "id": 1005,
+        "nombre": "Diego Barrios",
+        "telefono": "45141589",
+        "correo": "diegobarr@gmail.com",
+        "ciudad": "Totonicapan"
     }
 ]
