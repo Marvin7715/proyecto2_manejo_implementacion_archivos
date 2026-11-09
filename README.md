@@ -100,6 +100,7 @@ proyecto2_manejo_implementacion_archivos/
 │   └── respaldo_contactos.zip
 │
 ├── docs/
+│   └── PROYECTO 2  MA (Reporte Final).pdf
 ├── tests/
 ├── main.py
 ├── requirements.txt
@@ -189,7 +190,3 @@ El código fuente se encuentra alojado en GitHub y su desarrollo se registró me
 
 **Repositorio:**  
 https://github.com/Marvin7715/proyecto2_manejo_implementacion_archivos
-
-## 11. Autoría
-
-Proyecto académico desarrollado como parte del Laboratorio 2 de Manejo de Archivos.
