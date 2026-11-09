@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1001,
+        "nombre": "Armando Vásquez",
+        "telefono": "45973430",
+        "correo": "mateo12@gmail.com",
+        "ciudad": "Salcajá"
+    },
+    {
+        "id": 1002,
+        "nombre": "Fernando Perez",
+        "telefono": "55151669",
+        "correo": "yordy09@gmail.com",
+        "ciudad": "Huehuetenango"
+    }
+]
