@@ -101,7 +101,6 @@ proyecto2_manejo_implementacion_archivos/
 │
 ├── docs/
 │   └── PROYECTO 2  MA (Reporte Final).pdf
-├── tests/
 ├── main.py
 ├── requirements.txt
 ├── .gitignore
