@@ -11,8 +11,8 @@ from PySide6.QtWidgets import (
     QHeaderView,
 )
 
-from agenda_contactos.almacenamiento.respaldo import crear_respaldo
-from agenda_contactos.almacenamiento.metadatos import consultar_metadatos
+from agenda_contactos.herramientas.respaldos import crear_respaldo
+from agenda_contactos.herramientas.metadatos import consultar_metadatos
 from agenda_contactos.almacenamiento.integridad import verificar_integridad
 
 
