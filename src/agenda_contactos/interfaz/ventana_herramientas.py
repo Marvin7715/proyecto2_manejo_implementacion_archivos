@@ -1,17 +1,19 @@
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QHBoxLayout,
     QLabel,
     QPushButton,
     QMessageBox,
     QFrame,
     QTableWidget,
     QTableWidgetItem,
-    QHeaderView
+    QHeaderView,
 )
 
 from agenda_contactos.almacenamiento.respaldo import crear_respaldo
 from agenda_contactos.almacenamiento.metadatos import consultar_metadatos
+from agenda_contactos.almacenamiento.integridad import verificar_integridad
 
 
 class VentanaHerramientas(QWidget):
@@ -19,103 +21,175 @@ class VentanaHerramientas(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Herramientas del sistema")
-
         self.crear_interfaz()
         self.actualizar_metadatos()
 
     def crear_interfaz(self):
         layout_principal = QVBoxLayout(self)
-        layout_principal.setContentsMargins(20, 15, 20, 15)
-        layout_principal.setSpacing(15)
+        layout_principal.setContentsMargins(0, 5, 0, 0)
+        layout_principal.setSpacing(14)
 
-        titulo = QLabel("Herramientas del sistema")
+        panel_acciones = QFrame()
+        panel_acciones.setObjectName("panel_contenido")
+
+        layout_acciones = QVBoxLayout(panel_acciones)
+        layout_acciones.setContentsMargins(20, 17, 20, 17)
+        layout_acciones.setSpacing(12)
+
+        titulo = QLabel("Mantenimiento de archivos")
         titulo.setObjectName("seccion_titulo")
 
         descripcion = QLabel(
-            "Administra los respaldos y consulta la información "
-            "de los archivos del sistema."
+            "Verifica la integridad de la información y administra "
+            "copias de seguridad de los archivos principales."
         )
+        descripcion.setObjectName("seccion_descripcion")
         descripcion.setWordWrap(True)
 
-        tarjeta = QFrame()
-        tarjeta.setObjectName("tarjeta")
+        layout_acciones.addWidget(titulo)
+        layout_acciones.addWidget(descripcion)
 
-        layout_tarjeta = QVBoxLayout(tarjeta)
-        layout_tarjeta.setContentsMargins(18, 15, 18, 15)
-        layout_tarjeta.setSpacing(10)
+        botones = QHBoxLayout()
+        botones.setSpacing(10)
 
-        subtitulo = QLabel("Respaldo de archivos")
-        subtitulo.setObjectName("subtitulo")
+        self.boton_verificar = QPushButton("Verificar integridad SHA-256")
+        self.boton_verificar.setObjectName("boton_primario")
+        self.boton_verificar.clicked.connect(self.verificar_hash)
 
-        detalle = QLabel(
-            "Genera una copia comprimida de contactos.dat "
-            "e indice.json."
+        self.boton_respaldo = QPushButton("Crear respaldo ZIP")
+        self.boton_respaldo.setObjectName("boton_exito")
+        self.boton_respaldo.clicked.connect(self.generar_respaldo)
+
+        botones.addWidget(self.boton_verificar)
+        botones.addWidget(self.boton_respaldo)
+        botones.addStretch()
+
+        layout_acciones.addLayout(botones)
+
+        self.estado_integridad = QLabel(
+            "La verificación de integridad está disponible."
         )
-        detalle.setWordWrap(True)
+        self.estado_integridad.setObjectName("estado")
+        self.estado_integridad.setWordWrap(True)
 
-        boton_respaldo = QPushButton("Crear respaldo ZIP")
-        boton_respaldo.clicked.connect(self.generar_respaldo)
-
-        self.resultado = QLabel(
-            "Todavía no se ha generado un respaldo."
+        self.resultado_respaldo = QLabel(
+            "Todavía no se ha generado un respaldo en esta sesión."
         )
-        self.resultado.setWordWrap(True)
+        self.resultado_respaldo.setObjectName("estado")
+        self.resultado_respaldo.setWordWrap(True)
 
-        layout_tarjeta.addWidget(subtitulo)
-        layout_tarjeta.addWidget(detalle)
-        layout_tarjeta.addWidget(boton_respaldo)
-        layout_tarjeta.addWidget(self.resultado)
+        layout_acciones.addWidget(self.estado_integridad)
+        layout_acciones.addWidget(self.resultado_respaldo)
 
-        subtitulo_metadatos = QLabel("Metadatos y permisos")
-        subtitulo_metadatos.setObjectName("subtitulo")
+        panel_metadatos = QFrame()
+        panel_metadatos.setObjectName("panel_contenido")
+
+        layout_metadatos = QVBoxLayout(panel_metadatos)
+        layout_metadatos.setContentsMargins(18, 15, 18, 15)
+        layout_metadatos.setSpacing(10)
+
+        encabezado = QHBoxLayout()
+
+        titulo_metadatos = QLabel("Información del archivo")
+        titulo_metadatos.setObjectName("seccion_titulo")
 
         boton_actualizar = QPushButton("Actualizar información")
         boton_actualizar.clicked.connect(self.actualizar_metadatos)
+
+        encabezado.addWidget(titulo_metadatos)
+        encabezado.addStretch()
+        encabezado.addWidget(boton_actualizar)
 
         self.tabla = QTableWidget()
         self.tabla.setColumnCount(6)
         self.tabla.setHorizontalHeaderLabels([
             "Archivo",
             "Tamaño",
-            "Modificación",
+            "Última modificación",
             "Lectura",
             "Escritura",
-            "Estado"
+            "Estado",
         ])
-
+        self.tabla.setAlternatingRowColors(True)
+        self.tabla.setMinimumHeight(190)
+        self.tabla.verticalHeader().setVisible(False)
+        self.tabla.verticalHeader().setDefaultSectionSize(36)
+        self.tabla.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.Stretch
+        )
+        self.tabla.setSelectionBehavior(
+            QTableWidget.SelectionBehavior.SelectRows
+        )
         self.tabla.setEditTriggers(
             QTableWidget.EditTrigger.NoEditTriggers
         )
 
-        self.tabla.setSelectionBehavior(
-            QTableWidget.SelectionBehavior.SelectRows
-        )
+        layout_metadatos.addLayout(encabezado)
+        layout_metadatos.addWidget(self.tabla)
 
-        self.tabla.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.ResizeToContents
-        )
+        layout_principal.addWidget(panel_acciones)
+        layout_principal.addWidget(panel_metadatos, 1)
 
-        self.tabla.horizontalHeader().setStretchLastSection(True)
+    def verificar_hash(self):
+        try:
+            estado, mensaje = verificar_integridad()
+            self.estado_integridad.setText(mensaje)
 
-        layout_principal.addWidget(titulo)
-        layout_principal.addWidget(descripcion)
-        layout_principal.addWidget(tarjeta)
-        layout_principal.addWidget(subtitulo_metadatos)
-        layout_principal.addWidget(boton_actualizar)
-        layout_principal.addWidget(self.tabla, 1)
+            if estado == "correcto":
+                QMessageBox.information(
+                    self,
+                    "Integridad verificada",
+                    "El archivo contactos.dat conserva su integridad."
+                )
+            elif estado == "alterado":
+                QMessageBox.warning(
+                    self,
+                    "Advertencia de integridad",
+                    mensaje
+                )
+            elif estado == "nuevo":
+                QMessageBox.information(
+                    self,
+                    "Hash inicial creado",
+                    mensaje
+                )
+            else:
+                QMessageBox.information(
+                    self,
+                    "Sin archivo de contactos",
+                    mensaje
+                )
+
+            self.actualizar_metadatos()
+
+        except (OSError, ValueError) as error:
+            QMessageBox.critical(
+                self,
+                "Error de integridad",
+                str(error)
+            )
 
     def generar_respaldo(self):
         try:
             resultado = crear_respaldo()
 
-            self.resultado.setText(
-                f"Respaldo creado correctamente.\n"
-                f"Ubicación: {resultado['ruta']}\n"
-                f"Tamaño original: "
-                f"{resultado['tamano_original']} bytes\n"
-                f"Tamaño comprimido: "
-                f"{resultado['tamano_comprimido']} bytes"
+            original = resultado["tamano_original"]
+            comprimido = resultado["tamano_comprimido"]
+
+            if original > 0:
+                porcentaje = (1 - comprimido / original) * 100
+                comparacion = (
+                    f"Variación de tamaño: {porcentaje:.2f}% "
+                    "(un valor positivo indica reducción)."
+                )
+            else:
+                comparacion = "No se pudo calcular la variación de tamaño."
+
+            self.resultado_respaldo.setText(
+                f"Respaldo creado: {resultado['ruta']}\n"
+                f"Tamaño original: {original:,} bytes\n"
+                f"Tamaño comprimido: {comprimido:,} bytes\n"
+                f"{comparacion}"
             )
 
             self.actualizar_metadatos()
@@ -136,7 +210,6 @@ class VentanaHerramientas(QWidget):
     def actualizar_metadatos(self):
         try:
             resultados = consultar_metadatos()
-
             self.tabla.setRowCount(len(resultados))
 
             for fila, datos in enumerate(resultados):
@@ -146,14 +219,16 @@ class VentanaHerramientas(QWidget):
                     datos["modificacion"],
                     datos["lectura"],
                     datos["escritura"],
-                    datos["estado"]
+                    datos["estado"],
                 ]
 
                 for columna, valor in enumerate(valores):
                     elemento = QTableWidgetItem(str(valor))
                     self.tabla.setItem(fila, columna, elemento)
 
-        except OSError as error:
+            self.tabla.resizeRowsToContents()
+
+        except (OSError, ValueError) as error:
             QMessageBox.warning(
                 self,
                 "Error de metadatos",
